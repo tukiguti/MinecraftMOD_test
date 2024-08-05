@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "has_tnt": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:tnt"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "exampletnt:textures/block/large_tnt.png",
+    "description": {
+      "translate": "block.minecraft.tnt"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:tnt"
+    },
+    "show_toast": true,
+    "title": {
+      "text": "ExampleTNT"
+    }
+  },
+  "requirements": [
+    [
+      "has_tnt"
+    ]
+  ]
+}

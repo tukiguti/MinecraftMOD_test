@@ -1,0 +1,46 @@
+{
+  "parent": "exampletnt:root",
+  "criteria": {
+    "has_large_tnt": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "exampletnt:large_tnt"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "place_large_tnt": {
+      "conditions": {
+        "block": "exampletnt:large_tnt"
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "block.exampletnt.large_tnt"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "exampletnt:large_tnt"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "block.exampletnt.large_tnt"
+    }
+  },
+  "requirements": [
+    [
+      "place_large_tnt"
+    ],
+    [
+      "has_large_tnt"
+    ]
+  ]
+}
