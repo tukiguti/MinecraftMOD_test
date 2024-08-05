@@ -1,8 +1,6 @@
 package kirby.exampletnt;
 
-import kirby.exampletnt.provider.ExampleTNTBlockStateProvider;
-import kirby.exampletnt.provider.ExampleTNTItemModelProvider;
-import kirby.exampletnt.provider.ExampleTNTLangProvider;
+import kirby.exampletnt.provider.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -21,7 +19,6 @@ public class ExampleTNT {
         modEventBus.addListener(this::registerProviders);
         ExampleTNTBlocks.register(modEventBus);
         ExampleTNTItems.register(modEventBus);
-
     }
 
     private void registerProviders(GatherDataEvent event) {
@@ -32,5 +29,11 @@ public class ExampleTNT {
         gen.addProvider(event.includeClient(), new ExampleTNTBlockStateProvider(packOutput, fileHelper));
         gen.addProvider(event.includeClient(), new ExampleTNTLangProvider.ExampleTNTLangUS(gen.getPackOutput()));
         gen.addProvider(event.includeClient(), new ExampleTNTLangProvider.ExampleTNTLangJP(gen.getPackOutput()));
+        gen.addProvider(event.includeServer(), new ExampleTNTRecipeProvider(gen.getPackOutput()));
+        gen.addProvider(event.includeServer(), new ExampleTNTAdvancementProvider(packOutput, event.getLookupProvider(), fileHelper));
+
+        ExampleTNTBlockTagsProvider blockTagsProvider = new ExampleTNTBlockTagsProvider(packOutput, event.getLookupProvider(), fileHelper);
+        gen.addProvider(event.includeServer(), blockTagsProvider);
+        gen.addProvider(event.includeServer(), new ExampleTNTItemTagsProvider(packOutput, event.getLookupProvider(), blockTagsProvider.contentsGetter(), fileHelper));
     }
 }
