@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "exampletnt",
+  "key": {
+    "A": {
+      "item": "exampletnt:small_tnt"
+    },
+    "B": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BBB",
+    "AAA"
+  ],
+  "result": {
+    "count": 2,
+    "item": "exampletnt:big_tnt"
+  },
+  "show_notification": true
+}
