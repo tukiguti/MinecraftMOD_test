@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "exampletnt",
+  "ingredients": [
+    {
+      "item": "exampletnt:large_tnt"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "exampletnt:small_tnt"
+  }
+}

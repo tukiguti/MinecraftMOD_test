@@ -1,0 +1,33 @@
+{
+  "parent": "exampletnt:root",
+  "criteria": {
+    "toss_small_tnt": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "item.exampletnt.small_tnt"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "exampletnt:small_tnt"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "item.exampletnt.small_tnt"
+    }
+  },
+  "requirements": [
+    [
+      "toss_small_tnt"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "minecraft:chests/spawn_bonus_chest"
+    ]
+  }
+}
