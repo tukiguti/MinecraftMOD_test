@@ -38,9 +38,9 @@ public class Hud {
         int x = 5; //左端から5ピクセル右
         int y = height - maximageHeight - 5; // 下端から5ピクセル上
 
-        RenderSystem.enableBlend();
+        /*RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);*/
 
         //LEVEL_BAR_FRAMEを表示
         RenderSystem.setShaderTexture(0, LEVEL_BAR_FRAME);
@@ -58,6 +58,6 @@ public class Hud {
         RenderSystem.setShaderTexture(0, LEVEL_BAR);
         GuiComponent.blit(poseStack, x+2, y+1, 0, 0, imageWidth, maximageHeight-2, maximageWidth-1, maximageHeight-2);
 
-        RenderSystem.disableBlend();
+        //RenderSystem.disableBlend();
     }
 }
