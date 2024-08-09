@@ -1,19 +1,25 @@
 package net.tukiguti.lolmod.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod.EventBusSubscriber(modid = "lolmod", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class LolModConfig {
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     public static final ForgeConfigSpec.IntValue BASE_XP_FOR_LEVEL_UP;
     public static final ForgeConfigSpec.DoubleValue XP_INCREASE_RATE;
     public static final ForgeConfigSpec.IntValue XP_FROM_SKELETON;
+
+    private static boolean configLoaded = false;
 
     static {
         BUILDER.push("Level System");
@@ -35,27 +41,32 @@ public class LolModConfig {
 
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
-    public static void register() {
+    public static void register(IEventBus modEventBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "lolmod-common.toml");
-        System.out.println("LolMod config registered.");
+        modEventBus.addListener(LolModConfig::onLoad);
+        modEventBus.addListener(LolModConfig::onReload);
+        LOGGER.info("LolMod config registered");
     }
 
-    @SubscribeEvent
     public static void onLoad(final ModConfigEvent.Loading configEvent) {
-        System.out.println("Loaded lolmod config file.");
+        configLoaded = true;
+        LOGGER.info("Loaded lolmod config file");
         printConfigValues();
     }
 
-    @SubscribeEvent
     public static void onReload(final ModConfigEvent.Reloading configEvent) {
-        System.out.println("Reloaded lolmod config file.");
+        configLoaded = true;
+        LOGGER.info("Reloaded lolmod config file");
         printConfigValues();
     }
 
     private static void printConfigValues() {
-        System.out.println("Current config values:");
-        System.out.println("BASE_XP_FOR_LEVEL_UP: " + BASE_XP_FOR_LEVEL_UP.get());
-        System.out.println("XP_INCREASE_RATE: " + XP_INCREASE_RATE.get());
-        System.out.println("XP_FROM_SKELETON: " + XP_FROM_SKELETON.get());
+        LOGGER.info("Current config values:");
+        LOGGER.info("BASE_XP_FOR_LEVEL_UP: {}", BASE_XP_FOR_LEVEL_UP.get());
+        LOGGER.info("XP_INCREASE_RATE: {}", XP_INCREASE_RATE.get());
+        LOGGER.info("XP_FROM_SKELETON: {}", XP_FROM_SKELETON.get());
+    }
+    public static boolean isLoaded() {
+        return configLoaded;
     }
 }

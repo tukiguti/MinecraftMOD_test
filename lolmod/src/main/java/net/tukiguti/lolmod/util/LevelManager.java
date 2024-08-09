@@ -8,8 +8,11 @@ import net.minecraftforge.network.PacketDistributor;
 import net.tukiguti.lolmod.config.LolModConfig;
 import net.tukiguti.lolmod.network.PacketHandler;
 import net.tukiguti.lolmod.network.SyncLevelDataPacket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LevelManager {
+    private static final Logger LOGGER = LogManager.getLogger();
     private int level;
     private int currentXP;
     private final Player player;
@@ -18,8 +21,8 @@ public class LevelManager {
     private static final String LEVEL_KEY = "level";
     private static final String XP_KEY = "xp";
 
-    private static final int DEFAULT_BASE_XP = 100;
-    private static final double DEFAULT_XP_RATE = 1.1;
+    //private static final int DEFAULT_BASE_XP = 100;
+    //private static final double DEFAULT_XP_RATE = 1.1;
 
     private LevelManager(Player player) {
         this.player = player;
@@ -36,25 +39,33 @@ public class LevelManager {
             levelUp();
         }
         save();
-        syncToClient();
-        System.out.println("Player XP updated. Current XP: " + currentXP + ", Level: " + level);
+        LOGGER.info("Player XP updated. Current XP: {}, Level: {}", currentXP, level);
     }
 
     private void levelUp() {
         currentXP -= getXPForNextLevel();
         level++;
-        System.out.println("Player leveled up! New level: " + level);
+        LOGGER.info("Player leveled up! New level: {}", level);
     }
 
-    public int getXPForNextLevel() {
+    /*public int getXPForNextLevel() {
         int baseXP = DEFAULT_BASE_XP;
         double rate = DEFAULT_XP_RATE;
         try {
             baseXP = LolModConfig.BASE_XP_FOR_LEVEL_UP.get();
             rate = LolModConfig.XP_INCREASE_RATE.get();
         } catch (IllegalStateException e) {
-            System.out.println("Config not loaded, using default values for XP calculation");
+            LOGGER.warn("Config not loaded, using default values for XP calculation");
         }
+        return (int) (baseXP * Math.pow(rate, level - 1));
+    }*/
+    public int getXPForNextLevel() {
+        if (!LolModConfig.isLoaded()) {
+            LOGGER.warn("Config not loaded, using default values for XP calculation");
+            return 100; // デフォルト値
+        }
+        int baseXP = LolModConfig.BASE_XP_FOR_LEVEL_UP.get();
+        double rate = LolModConfig.XP_INCREASE_RATE.get();
         return (int) (baseXP * Math.pow(rate, level - 1));
     }
 
@@ -65,7 +76,7 @@ public class LevelManager {
         data.putInt(LEVEL_KEY, level);
         data.putInt(XP_KEY, currentXP);
         persistentData.put(DATA_NAME, data);
-        System.out.println("Saved player data: Level " + level + ", XP " + currentXP);
+        LOGGER.debug("Saved player data: Level {}, XP {}", level, currentXP);
     }
 
     private void load() {
@@ -84,7 +95,7 @@ public class LevelManager {
             currentXP = 0;
         }
         if (level == 0) level = 1;
-        System.out.println("Loaded player data: Level " + level + ", XP " + currentXP);
+        LOGGER.debug("Loaded player data: Level {}, XP {}", level, currentXP);
     }
 
     private void syncToClient() {
@@ -96,7 +107,7 @@ public class LevelManager {
     public void setLevelData(int newLevel, int newXP) {
         this.level = newLevel;
         this.currentXP = newXP;
-        System.out.println("Client received updated level data: Level " + level + ", XP " + currentXP);
+        LOGGER.info("Client received updated level data: Level {}, XP {}", level, currentXP);
     }
 
     public int getLevel() {
