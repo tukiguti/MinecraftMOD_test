@@ -13,10 +13,13 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.tukiguti.lolmod.util.LevelManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod("lolmod")
 @Mod.EventBusSubscriber(modid = "lolmod", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class Hud extends GuiComponent{
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceLocation LEVEL_BAR_FRAME = new ResourceLocation("lolmod", "textures/bar/level_bar_frame.png");
     private static final ResourceLocation LEVEL_BAR = new ResourceLocation("lolmod", "textures/bar/level_bar.png");
 
@@ -25,9 +28,6 @@ public class Hud extends GuiComponent{
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (mc.player == null) return;
-
-        // MODが完全に読み込まれていない場合は描画をスキップ
-        //if (!ModList.get().isLoaded("lolmod")) return;
 
         PoseStack poseStack = event.getPoseStack();
         int width = mc.getWindow().getGuiScaledWidth();
@@ -41,32 +41,35 @@ public class Hud extends GuiComponent{
         int x = 5; //左端から5ピクセル右
         int y = height - maxImageHeight - 5; // 下端から5ピクセル上
 
-        //LevelManagerからプレイヤーの現在の状態を取得
-        LevelManager levelManager = LevelManager.get(player);
-        int currentXP = levelManager.getCurrentXP();
-        int xpForNextLevel = levelManager.getXPForNextLevel();
-        int currentLevel = levelManager.getLevel();
+        try {
+            //LevelManagerからプレイヤーの現在の状態を取得
+            LevelManager levelManager = LevelManager.get(player);
+            int currentXP = levelManager.getCurrentXP();
+            int xpForNextLevel = levelManager.getXPForNextLevel();
+            int currentLevel = levelManager.getLevel();
 
-        //LEVEL_BAR_FRAMEを表示
-        RenderSystem.setShaderTexture(0, LEVEL_BAR_FRAME);
-        blit(poseStack, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
+            //LEVEL_BAR_FRAMEを表示
+            RenderSystem.setShaderTexture(0, LEVEL_BAR_FRAME);
+            blit(poseStack, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
 
 
-        //LEVEL_BARの横幅が変化
-        if (xpForNextLevel > 0) {
-            float progress = (float) currentXP / xpForNextLevel;
-            int imageWidth = (int) ((maxImageWidth - 2) * progress);
+            //LEVEL_BARの横幅が変化
+            if (xpForNextLevel > 0) {
+                float progress = (float) currentXP / xpForNextLevel;
+                int imageWidth = (int) ((maxImageWidth - 2) * progress);
 
-            //LEVEL_BARを表示
-            RenderSystem.setShaderTexture(0, LEVEL_BAR);
-            blit(poseStack, x + 2, y + 1, 0, 0, imageWidth, maxImageHeight - 2, maxImageWidth - 1, maxImageHeight - 2);
+                //LEVEL_BARを表示
+                RenderSystem.setShaderTexture(0, LEVEL_BAR);
+                blit(poseStack, x + 2, y + 1, 0, 0, imageWidth, maxImageHeight - 2, maxImageWidth - 1, maxImageHeight - 2);
+            }
+            // レベル表示
+            String levelText = "Level: " + currentLevel + " XP: " + currentXP + "/" + xpForNextLevel;
+            mc.font.draw(poseStack, levelText, x + 3, y - 10, 0xFFFFFF);
+
+            // デバッグ情報
+            LOGGER.debug("HUD Update - Level: {}, XP: {}/{}", currentLevel, currentXP, xpForNextLevel);
+        } catch (Exception e) {
+            LOGGER.error("Error rendering HUD", e);
         }
-        // レベル表示
-        String levelText = "Level: " + currentLevel + " XP: " + currentXP + "/" + xpForNextLevel;
-        mc.font.draw(poseStack, levelText, x+3, y-10, 0xFFFFFF);
-
-        // デバッグ情報
-        System.out.println("HUD Update - Level: " + currentLevel + ", XP: " + currentXP + "/" + xpForNextLevel);
-
     }
 }
