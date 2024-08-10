@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 @Mod.EventBusSubscriber(modid = "lolmod", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class Hud extends GuiComponent{
     private static final Logger LOGGER = LogManager.getLogger();
+    private static long lastLogTime = 0;
+    private static long lastLogTime2 = 0;
     private static final ResourceLocation LEVEL_BAR_FRAME = new ResourceLocation("lolmod", "textures/bar/level_bar_frame.png");
     private static final ResourceLocation LEVEL_BAR = new ResourceLocation("lolmod", "textures/bar/level_bar.png");
 
@@ -48,6 +50,13 @@ public class Hud extends GuiComponent{
             int xpForNextLevel = levelManager.getXPForNextLevel();
             int currentLevel = levelManager.getLevel();
 
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastLogTime >= 10000) {
+                LOGGER.debug("[CLIENT] Rendering HUD - Level: {}, XP: {}/{}", currentLevel, currentXP, xpForNextLevel);
+                lastLogTime = currentTime;
+            }
+
+
             //LEVEL_BAR_FRAMEを表示
             RenderSystem.setShaderTexture(0, LEVEL_BAR_FRAME);
             blit(poseStack, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
@@ -67,7 +76,10 @@ public class Hud extends GuiComponent{
             mc.font.draw(poseStack, levelText, x + 3, y - 10, 0xFFFFFF);
 
             // デバッグ情報
-            LOGGER.debug("HUD Update - Level: {}, XP: {}/{}", currentLevel, currentXP, xpForNextLevel);
+            if (currentTime - lastLogTime2 >= 10000) {
+                LOGGER.debug("HUD Update - Level: {}, XP: {}/{}", currentLevel, currentXP, xpForNextLevel);
+                lastLogTime2 = currentTime;
+            }
         } catch (Exception e) {
             LOGGER.error("Error rendering HUD", e);
         }

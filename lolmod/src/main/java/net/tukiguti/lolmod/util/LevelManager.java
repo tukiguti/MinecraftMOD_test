@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 public class LevelManager {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static long lastLogTime = 0;
+    private static long lastLogTime2 = 0;
     private int level;
     private int currentXP;
     private final Player player;
@@ -20,6 +22,8 @@ public class LevelManager {
     private static final String DATA_NAME = "LolModPlayerData";
     private static final String LEVEL_KEY = "level";
     private static final String XP_KEY = "xp";
+
+    private static final int DEFAULT_XP_FROM_SKELETON = 10;
 
     //private static final int DEFAULT_BASE_XP = 100;
     //private static final double DEFAULT_XP_RATE = 1.1;
@@ -39,7 +43,8 @@ public class LevelManager {
             levelUp();
         }
         save();
-        LOGGER.info("Player XP updated. Current XP: {}, Level: {}", currentXP, level);
+        LOGGER.info("[SERVER] Player {} XP updated. Current XP: {}, Level: {}", player.getName().getString(), currentXP, level);
+        syncToClient();
     }
 
     private void levelUp() {
@@ -61,12 +66,26 @@ public class LevelManager {
     }*/
     public int getXPForNextLevel() {
         if (!LolModConfig.isLoaded()) {
-            LOGGER.warn("Config not loaded, using default values for XP calculation");
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastLogTime >= 10000) {
+                LOGGER.warn("Config not loaded, using default values for XP calculation");
+                lastLogTime = currentTime;
+            }
             return 100; // デフォルト値
         }
         int baseXP = LolModConfig.BASE_XP_FOR_LEVEL_UP.get();
         double rate = LolModConfig.XP_INCREASE_RATE.get();
+        LOGGER.debug("Calculating XP for next level. Base XP: {}, Rate: {}", baseXP, rate);
         return (int) (baseXP * Math.pow(rate, level - 1));
+    }
+
+    public static int getXPFromSkeleton() {
+        LOGGER.debug("Checking if config is loaded: {}", LolModConfig.isLoaded());
+        if (!LolModConfig.isLoaded()) {
+            LOGGER.warn("Config not loaded yet, using default XP value for skeleton kill");
+            return DEFAULT_XP_FROM_SKELETON;
+        }
+        return LolModConfig.XP_FROM_SKELETON.get();
     }
 
     private void save() {
@@ -95,12 +114,17 @@ public class LevelManager {
             currentXP = 0;
         }
         if (level == 0) level = 1;
-        LOGGER.debug("Loaded player data: Level {}, XP {}", level, currentXP);
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastLogTime2 >= 10000) {
+            LOGGER.debug("Loaded player data: Level {}, XP {}", level, currentXP);
+            lastLogTime2 = currentTime;
+        }
     }
 
     private void syncToClient() {
         if (player instanceof ServerPlayer serverPlayer && PacketHandler.INSTANCE != null) {
             PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncLevelDataPacket(level, currentXP));
+            LOGGER.info("[SERVER] Sent sync packet to client for player: {}", player.getName().getString());
         }
     }
 

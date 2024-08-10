@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 public class LolModConfig {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec SPEC;
 
     public static final ForgeConfigSpec.IntValue BASE_XP_FOR_LEVEL_UP;
     public static final ForgeConfigSpec.DoubleValue XP_INCREASE_RATE;
@@ -37,27 +38,44 @@ public class LolModConfig {
                 .defineInRange("xpFromSkeleton", 10, 1, Integer.MAX_VALUE);
 
         BUILDER.pop();
+        SPEC = BUILDER.build();
     }
 
-    public static final ForgeConfigSpec SPEC = BUILDER.build();
+    public static void loadConfig() {
+        LOGGER.info("Loading LolMod config");
+        try {
+            BASE_XP_FOR_LEVEL_UP.get();
+            XP_INCREASE_RATE.get();
+            XP_FROM_SKELETON.get();
+            configLoaded = true;
+            LOGGER.info("LolMod config loaded successfully");
+            printConfigValues();
+        } catch (IllegalStateException e) {
+            LOGGER.error("Failed to load LolMod config", e);
+            configLoaded = false;
+        }
+    }
 
     public static void register(IEventBus modEventBus) {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "lolmod-common.toml");
+        LOGGER.info("LolModConfig: Registering config");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "forge-common.toml");
         modEventBus.addListener(LolModConfig::onLoad);
         modEventBus.addListener(LolModConfig::onReload);
-        LOGGER.info("LolMod config registered");
+        LOGGER.info("LolModConfig: Config registered");
     }
 
     public static void onLoad(final ModConfigEvent.Loading configEvent) {
+        LOGGER.info("LolModConfig: Loading config file {}", configEvent.getConfig().getFileName());
         configLoaded = true;
-        LOGGER.info("Loaded lolmod config file");
         printConfigValues();
+        LOGGER.info("LolModConfig: Config loaded successfully");
     }
 
     public static void onReload(final ModConfigEvent.Reloading configEvent) {
+        LOGGER.info("LolModConfig: Reloading config file {}", configEvent.getConfig().getFileName());
         configLoaded = true;
-        LOGGER.info("Reloaded lolmod config file");
         printConfigValues();
+        LOGGER.info("LolModConfig: Config reloaded successfully");
     }
 
     private static void printConfigValues() {
@@ -68,5 +86,11 @@ public class LolModConfig {
     }
     public static boolean isLoaded() {
         return configLoaded;
+    }
+
+    @SubscribeEvent
+    public static void onConfigChanged(final ModConfigEvent.Reloading event) {
+        LOGGER.info("Config changed, reloading...");
+        loadConfig();
     }
 }
