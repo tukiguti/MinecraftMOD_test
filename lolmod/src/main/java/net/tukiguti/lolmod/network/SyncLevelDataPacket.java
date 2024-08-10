@@ -4,10 +4,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import net.tukiguti.lolmod.util.LevelManager;
 import net.minecraft.client.Minecraft;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
 public class SyncLevelDataPacket {
+    private static final Logger LOGGER = LogManager.getLogger();
     private final int level;
     private final int xp;
 
@@ -27,12 +30,11 @@ public class SyncLevelDataPacket {
 
     public static void handle(SyncLevelDataPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            // クライアント側で実行
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
                 LevelManager levelManager = LevelManager.get(mc.player);
                 levelManager.setLevelData(msg.level, msg.xp);
-                System.out.println("Client received sync packet: Level " + msg.level + ", XP " + msg.xp);
+                LOGGER.info("[CLIENT] Received sync packet: Level {}, XP {} for player {}", msg.level, msg.xp, mc.player.getName().getString());
             }
         });
         ctx.get().setPacketHandled(true);
