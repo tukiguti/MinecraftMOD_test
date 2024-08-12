@@ -1,13 +1,13 @@
-package net.tukiguti.lolmod.level.util;
+package net.tukiguti.lolmod.level;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.PacketDistributor;
-import net.tukiguti.lolmod.level.config.LolModConfig;
-import net.tukiguti.lolmod.level.network.PacketHandler;
-import net.tukiguti.lolmod.level.network.SyncLevelDataPacket;
+import net.tukiguti.lolmod.level.LolModConfig;
+import net.tukiguti.lolmod.level.PacketHandler;
+import net.tukiguti.lolmod.level.SyncLevelDataPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

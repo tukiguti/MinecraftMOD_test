@@ -1,9 +1,9 @@
-package net.tukiguti.lolmod.level.network;
+package net.tukiguti.lolmod.level;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import net.tukiguti.lolmod.level.LolMod;
+import net.tukiguti.lolmod.LolMod;
 
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "1";

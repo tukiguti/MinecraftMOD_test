@@ -1,11 +1,11 @@
-package net.tukiguti.lolmod.level.event;
+package net.tukiguti.lolmod.level;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.tukiguti.lolmod.level.util.LevelManager;
+import net.tukiguti.lolmod.level.LevelManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
