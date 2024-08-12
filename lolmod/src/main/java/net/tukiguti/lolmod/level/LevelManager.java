@@ -59,7 +59,6 @@ public class LevelManager {
         int baseXP = LolModConfig.getBaseXPForLevelUp();
         double rate = LolModConfig.getXPIncreaseRate();
         int xpForNextLevel = (int) (baseXP * Math.pow(rate, level - 1));
-        LOGGER.debug("Calculating XP for next level. Base XP: {}, Rate: {}", baseXP, rate);
         return xpForNextLevel;
     }
 
@@ -68,17 +67,18 @@ public class LevelManager {
     }
 
     private void save() {
-        if (player instanceof FakePlayer) return;
+        /*if (player instanceof FakePlayer) return;
         CompoundTag persistentData = player.getPersistentData();
         CompoundTag data = new CompoundTag();
         data.putInt(LEVEL_KEY, level);
         data.putInt(XP_KEY, currentXP);
         persistentData.put(DATA_NAME, data);
-        LOGGER.debug("Saved player data: Level {}, XP {}", level, currentXP);
+        LOGGER.debug("Saved player data: Level {}, XP {}", level, currentXP);*/
+        PlayerDataManager.savePlayerData(player, level, currentXP);
     }
 
     private void load() {
-        if (player instanceof FakePlayer) {
+        /*if (player instanceof FakePlayer) {
             level = 1;
             currentXP = 0;
             return;
@@ -92,6 +92,10 @@ public class LevelManager {
             level = 1;
             currentXP = 0;
         }
+        if (level == 0) level = 1;*/
+        PlayerDataManager.PlayerData data = PlayerDataManager.loadPlayerData(player);
+        level = data.level;
+        currentXP = data.xp;
         if (level == 0) level = 1;
     }
 
@@ -106,6 +110,7 @@ public class LevelManager {
         this.level = newLevel;
         this.currentXP = newXP;
         LOGGER.info("Client received updated level data: Level {}, XP {}", level, currentXP);
+        save();
     }
 
     public int getLevel() {
