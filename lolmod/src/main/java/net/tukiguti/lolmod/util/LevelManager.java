@@ -25,6 +25,8 @@ public class LevelManager {
 
     private static final int DEFAULT_XP_FROM_SKELETON = 10;
 
+    private static LevelManager instance;
+
     //private static final int DEFAULT_BASE_XP = 100;
     //private static final double DEFAULT_XP_RATE = 1.1;
 
@@ -34,7 +36,11 @@ public class LevelManager {
     }
 
     public static LevelManager get(Player player) {
-        return new LevelManager(player);
+        if (instance == null) {
+            instance = new LevelManager(player);
+        }
+        return instance;
+        //return new LevelManager(player);
     }
 
     public void addXP(int amount) {

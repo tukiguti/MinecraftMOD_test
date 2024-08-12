@@ -1,16 +1,13 @@
 package net.tukiguti.lolmod;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.tukiguti.lolmod.config.LolModConfig;
 import net.tukiguti.lolmod.event.EntityEvents;
 import net.tukiguti.lolmod.network.PacketHandler;
-import net.tukiguti.lolmod.command.DebugCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
