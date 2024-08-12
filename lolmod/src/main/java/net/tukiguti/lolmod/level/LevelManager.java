@@ -8,6 +8,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.tukiguti.lolmod.level.LolModConfig;
 import net.tukiguti.lolmod.level.PacketHandler;
 import net.tukiguti.lolmod.level.SyncLevelDataPacket;
+import net.tukiguti.lolmod.mana.ManaManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,13 +54,20 @@ public class LevelManager {
         currentXP -= getXPForNextLevel();
         level++;
         LOGGER.info("Player leveled up! New level: {}", level);
+
+        // レベルアップ時にManaManagerを更新
+        ManaManager manaManager = ManaManager.get(player);
+        manaManager.updateMaxMana();
+
+        // マナを全回復
+        manaManager.setCurrentMana(manaManager.getMaxMana());
     }
 
     public int getXPForNextLevel() {
         int baseXP = LolModConfig.getBaseXPForLevelUp();
         double rate = LolModConfig.getXPIncreaseRate();
         int xpForNextLevel = (int) (baseXP * Math.pow(rate, level - 1));
-        LOGGER.debug("Calculating XP for next level. Base XP: {}, Rate: {}", baseXP, rate);
+        //LOGGER.debug("Calculating XP for next level. Base XP: {}, Rate: {}", baseXP, rate);
         return xpForNextLevel;
     }
 

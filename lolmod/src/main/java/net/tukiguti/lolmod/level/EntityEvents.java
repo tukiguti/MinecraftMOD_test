@@ -6,6 +6,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.tukiguti.lolmod.level.LevelManager;
+import net.tukiguti.lolmod.mana.ManaManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,4 +24,5 @@ public class EntityEvents {
             LOGGER.info("After XP gain: Level {}, XP {}", levelManager.getLevel(), levelManager.getCurrentXP());
         }
     }
+
 }
