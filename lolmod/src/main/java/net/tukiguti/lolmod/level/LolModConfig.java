@@ -24,7 +24,7 @@ public class LolModConfig {
 
         BASE_XP_FOR_LEVEL_UP = BUILDER
                 .comment("Base XP required for first level up")
-                .defineInRange("baseXPForLevelUp", 200, 1, Integer.MAX_VALUE);
+                .defineInRange("baseXPForLevelUp", 300, 1, Integer.MAX_VALUE);
 
         XP_INCREASE_RATE = BUILDER
                 .comment("Rate at which XP requirement increases per level")

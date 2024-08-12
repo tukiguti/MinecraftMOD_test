@@ -5,11 +5,15 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.tukiguti.lolmod.level.LolModConfig;
 import net.tukiguti.lolmod.level.EntityEvents;
 import net.tukiguti.lolmod.level.PacketHandler;
+import net.tukiguti.lolmod.level.PlayerDataManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 @Mod(LolMod.MOD_ID)
@@ -36,6 +40,8 @@ public class LolMod {
         // Forgeのイベントバスに登録
         MinecraftForge.EVENT_BUS.register(EntityEvents.class);
 
+        createModDirectory();
+
         LOGGER.info("LolMod: Initialization completed");
     }
 
@@ -43,6 +49,7 @@ public class LolMod {
         event.enqueueWork(() -> {
             PacketHandler.init();
             LolModConfig.loadConfig();
+            PlayerDataManager.loadPlayerData(null);
 
             if (LolModConfig.isLoaded()) {
                 LOGGER.info("Config successfully loaded during common setup");
@@ -50,5 +57,14 @@ public class LolMod {
                 LOGGER.error("Config not loaded during common setup");
             }
         });
+    }
+    private void createModDirectory() {
+        Path modDir = FMLPaths.GAMEDIR.get().resolve("lolmod");
+        try {
+            Files.createDirectories(modDir);
+            LOGGER.info("Created mod directory: {}", modDir);
+        } catch (Exception e) {
+            LOGGER.error("Failed to create mod directory: {}", modDir, e);
+        }
     }
 }
