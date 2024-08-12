@@ -1,20 +1,18 @@
-package net.tukiguti.lolmod.util;
+package net.tukiguti.lolmod.level.util;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.PacketDistributor;
-import net.tukiguti.lolmod.config.LolModConfig;
-import net.tukiguti.lolmod.network.PacketHandler;
-import net.tukiguti.lolmod.network.SyncLevelDataPacket;
+import net.tukiguti.lolmod.level.config.LolModConfig;
+import net.tukiguti.lolmod.level.network.PacketHandler;
+import net.tukiguti.lolmod.level.network.SyncLevelDataPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class LevelManager {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static long lastLogTime = 0;
-    private static long lastLogTime2 = 0;
     private int level;
     private int currentXP;
     private final Player player;
@@ -23,12 +21,11 @@ public class LevelManager {
     private static final String LEVEL_KEY = "level";
     private static final String XP_KEY = "xp";
 
-    private static final int DEFAULT_XP_FROM_SKELETON = 10;
-
     private static LevelManager instance;
 
     //private static final int DEFAULT_BASE_XP = 100;
     //private static final double DEFAULT_XP_RATE = 1.1;
+    //private static final int DEFAULT_XP_FROM_SKELETON = 10;
 
     private LevelManager(Player player) {
         this.player = player;
@@ -40,7 +37,6 @@ public class LevelManager {
             instance = new LevelManager(player);
         }
         return instance;
-        //return new LevelManager(player);
     }
 
     public void addXP(int amount) {
@@ -49,7 +45,7 @@ public class LevelManager {
             levelUp();
         }
         save();
-        LOGGER.info("[SERVER] Player {} XP updated. Current XP: {}, Level: {}", player.getName().getString(), currentXP, level);
+        LOGGER.info("Player {} XP updated. Current XP: {}, Level: {}", player.getName().getString(), currentXP, level);
         syncToClient();
     }
 
@@ -59,39 +55,16 @@ public class LevelManager {
         LOGGER.info("Player leveled up! New level: {}", level);
     }
 
-    /*public int getXPForNextLevel() {
-        int baseXP = DEFAULT_BASE_XP;
-        double rate = DEFAULT_XP_RATE;
-        try {
-            baseXP = LolModConfig.BASE_XP_FOR_LEVEL_UP.get();
-            rate = LolModConfig.XP_INCREASE_RATE.get();
-        } catch (IllegalStateException e) {
-            LOGGER.warn("Config not loaded, using default values for XP calculation");
-        }
-        return (int) (baseXP * Math.pow(rate, level - 1));
-    }*/
     public int getXPForNextLevel() {
-        if (!LolModConfig.isLoaded()) {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastLogTime >= 10000) {
-                LOGGER.warn("Config not loaded, using default values for XP calculation");
-                lastLogTime = currentTime;
-            }
-            return 100; // デフォルト値
-        }
-        int baseXP = LolModConfig.BASE_XP_FOR_LEVEL_UP.get();
-        double rate = LolModConfig.XP_INCREASE_RATE.get();
+        int baseXP = LolModConfig.getBaseXPForLevelUp();
+        double rate = LolModConfig.getXPIncreaseRate();
+        int xpForNextLevel = (int) (baseXP * Math.pow(rate, level - 1));
         LOGGER.debug("Calculating XP for next level. Base XP: {}, Rate: {}", baseXP, rate);
-        return (int) (baseXP * Math.pow(rate, level - 1));
+        return xpForNextLevel;
     }
 
     public static int getXPFromSkeleton() {
-        LOGGER.debug("Checking if config is loaded: {}", LolModConfig.isLoaded());
-        if (!LolModConfig.isLoaded()) {
-            LOGGER.warn("Config not loaded yet, using default XP value for skeleton kill");
-            return DEFAULT_XP_FROM_SKELETON;
-        }
-        return LolModConfig.XP_FROM_SKELETON.get();
+        return LolModConfig.getXPFromSkeleton();
     }
 
     private void save() {
@@ -120,11 +93,6 @@ public class LevelManager {
             currentXP = 0;
         }
         if (level == 0) level = 1;
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastLogTime2 >= 10000) {
-            LOGGER.debug("Loaded player data: Level {}, XP {}", level, currentXP);
-            lastLogTime2 = currentTime;
-        }
     }
 
     private void syncToClient() {

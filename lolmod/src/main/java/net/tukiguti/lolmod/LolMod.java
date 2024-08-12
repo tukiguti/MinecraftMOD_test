@@ -1,13 +1,13 @@
-package net.tukiguti.lolmod;
+package net.tukiguti.lolmod.level;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.tukiguti.lolmod.config.LolModConfig;
-import net.tukiguti.lolmod.event.EntityEvents;
-import net.tukiguti.lolmod.network.PacketHandler;
+import net.tukiguti.lolmod.level.config.LolModConfig;
+import net.tukiguti.lolmod.level.event.EntityEvents;
+import net.tukiguti.lolmod.level.network.PacketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +33,6 @@ public class LolMod {
 
         // MODのイベントバスに登録
         MinecraftForge.EVENT_BUS.register(this);
-
         // Forgeのイベントバスに登録
         MinecraftForge.EVENT_BUS.register(EntityEvents.class);
 
@@ -41,14 +40,15 @@ public class LolMod {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        LOGGER.info("LolMod common setup starting");
-        // 共通のセットアップコードをここに記述
         event.enqueueWork(() -> {
-            LolModConfig.loadConfig();
-            LOGGER.info("LolMod: Config initialized");
             PacketHandler.init();
-            LOGGER.info("LolMod: PacketHandler initialized");
+            LolModConfig.loadConfig();
+
+            if (LolModConfig.isLoaded()) {
+                LOGGER.info("Config successfully loaded during common setup");
+            } else {
+                LOGGER.error("Config not loaded during common setup");
+            }
         });
-        LOGGER.info("LolMod common setup completed");
     }
 }
