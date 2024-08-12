@@ -1,8 +1,8 @@
-package net.tukiguti.lolmod.network;
+package net.tukiguti.lolmod.level.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import net.tukiguti.lolmod.util.LevelManager;
+import net.tukiguti.lolmod.level.util.LevelManager;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
