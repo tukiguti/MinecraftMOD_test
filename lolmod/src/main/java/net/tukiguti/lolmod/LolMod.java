@@ -1,13 +1,13 @@
-package net.tukiguti.lolmod.level;
+package net.tukiguti.lolmod;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.tukiguti.lolmod.level.config.LolModConfig;
-import net.tukiguti.lolmod.level.event.EntityEvents;
-import net.tukiguti.lolmod.level.network.PacketHandler;
+import net.tukiguti.lolmod.level.LolModConfig;
+import net.tukiguti.lolmod.level.EntityEvents;
+import net.tukiguti.lolmod.level.PacketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package net.tukiguti.lolmod.level.config;
+package net.tukiguti.lolmod.level;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
