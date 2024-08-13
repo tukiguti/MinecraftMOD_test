@@ -110,11 +110,15 @@ public class PlayerDataManager {
     }
 
     private static Path getDataFilePath(String worldName) {
-        return FMLPaths.GAMEDIR.get()
+        Path saveDir = FMLPaths.GAMEDIR.get().resolve("saves").resolve(worldName);
+        Path dataFilePath = saveDir.resolve(DATA_FILE_NAME);
+        LOGGER.debug("Data file path: {}", dataFilePath.toString());
+        return dataFilePath;
+        /*return FMLPaths.GAMEDIR.get()
                 .resolve("lolmod")
                 .resolve("worlds")
                 .resolve(worldName)
-                .resolve(DATA_FILE_NAME);
+                .resolve(DATA_FILE_NAME);*/
     }
 
     public static class PlayerData {
