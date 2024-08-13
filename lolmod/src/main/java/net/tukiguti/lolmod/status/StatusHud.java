@@ -15,6 +15,7 @@ import java.text.DecimalFormat;
 @Mod.EventBusSubscriber(modid = "lolmod", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class StatusHud extends GuiComponent {
     private static final DecimalFormat df = new DecimalFormat("#.##");
+    private static final double BASE_MOVEMENT_SPEED = 0.1;
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
@@ -38,36 +39,45 @@ public class StatusHud extends GuiComponent {
         drawString(poseStack, Minecraft.getInstance().font, "Player Status:", x, y, 0xFFFFFF);
         y += lineHeight + 2;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Movement Speed: " + df.format(status.getMovementSpeed()), x, y, 0xFFFFFF);
+        int movementSpeedPercent = (int)Math.round((status.getTotalMovementSpeed() / BASE_MOVEMENT_SPEED - 1) * 100);
+        String movementSpeedText = String.format("Movement Speed: +%d%%", movementSpeedPercent);
+        drawString(poseStack, Minecraft.getInstance().font, movementSpeedText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Max Health: " + df.format(status.getMaxHealth()), x, y, 0xFFFFFF);
+        drawString(poseStack, Minecraft.getInstance().font, "Health: " + df.format(status.getTotalMaxHealth()), x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Health Regen: " + df.format(status.getHealthRegen()), x, y, 0xFFFFFF);
+        String healthRegenText = String.format("Health Regen: %d%%", (int)Math.round(status.getTotalHealthRegen() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, healthRegenText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Mana Regen: " + df.format(status.getManaRegen()), x, y, 0xFFFFFF);
+        String damageReductionText = String.format("Defense: %d%%", (int)Math.round(status.getTotalDamageReduction() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, damageReductionText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Damage: " + df.format(status.getDamage()), x, y, 0xFFFFFF);
+        drawString(poseStack, Minecraft.getInstance().font, "Mana Regen: " + df.format(status.getTotalManaRegen()), x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Defense: " + df.format(status.getDefense()), x, y, 0xFFFFFF);
+        drawString(poseStack, Minecraft.getInstance().font, "Damage: " + df.format(status.getTotalDamage()), x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Armor Penetration: " + df.format(status.getArmorPenetration()), x, y, 0xFFFFFF);
+        String armorPenetrationText = String.format("Armor Penetration: %d%%", (int)Math.round(status.getTotalArmorPenetration() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, armorPenetrationText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Critical Chance: " + df.format(status.getCriticalChance() * 100) + "%", x, y, 0xFFFFFF);
+        String criticalChanceText = String.format("Critical Chance: %d%%", (int)Math.round(status.getTotalCritical() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, criticalChanceText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Life Steal: " + df.format(status.getLifeSteal() * 100) + "%", x, y, 0xFFFFFF);
+        String lifeStealText = String.format("Life Steal: %d%%", (int)Math.round(status.getTotalLifeSteal() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, lifeStealText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Omni Vamp: " + df.format(status.getOmniVamp() * 100) + "%", x, y, 0xFFFFFF);
+        String omniVampText = String.format("Omni Vamp: %d%%", (int)(status.getTotalOmniVamp() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, omniVampText, x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Tenacity: " + df.format(status.getTenacity() * 100) + "%", x, y, 0xFFFFFF);
+        String tenacityText = String.format("Tenacity: %d%%", (int)(status.getTotalTenacity() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, tenacityText, x, y, 0xFFFFFF);
     }
 }
