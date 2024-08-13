@@ -79,13 +79,13 @@ public class LolModConfig {
     }
 
     public static int getBaseXPForLevelUp() {
-        return configLoaded ? BASE_XP_FOR_LEVEL_UP.get() : 200;
+        return configLoaded ? BASE_XP_FOR_LEVEL_UP.get() : 30;
     }
     //configLoadedがtrueならBASE_XP_FOR_LEVEL_UP.get()
     //configLoadedがfalseなら200
 
     public static double getXPIncreaseRate() {
-        return configLoaded ? XP_INCREASE_RATE.get() : 1.2; // デフォルト値
+        return configLoaded ? XP_INCREASE_RATE.get() : 1.1; // デフォルト値
     }
 
     public static int getXPFromSkeleton() {
