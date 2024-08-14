@@ -57,8 +57,8 @@ public class PlayerStatus {
     private double itemLifeSteal;
     private double baseOmniVamp;
     private double itemOmniVamp;
-    private double baseTenacity;
-    private double itemTenacity;
+    private double baseCd;
+    private double itemCd;
 
     public PlayerStatus(Player player) {
         this.player = player;
@@ -80,7 +80,7 @@ public class PlayerStatus {
         this.baseCritical = 0.05 + (level * 0.005);
         this.baseLifeSteal = level * 0.01;
         this.baseOmniVamp = level * 0.005;
-        this.baseTenacity = level * 0.01;
+        this.baseCd = level * 0.01;
 
         applyAttributeModifiers();
     }
@@ -195,8 +195,8 @@ public class PlayerStatus {
     public void setItemOmniVamp(double bonus) {
         this.itemOmniVamp = bonus;
     }
-    public void setItemTenacity(double bonus) {
-        this.itemTenacity = bonus;
+    public void setItemCd(double bonus) {
+        this.itemCd = bonus;
     }
 
     // 合計値を取得するメソッド
@@ -233,7 +233,7 @@ public class PlayerStatus {
     public double getTotalOmniVamp() {
         return baseOmniVamp + itemOmniVamp;
     }
-    public double getTotalTenacity() {
-        return baseTenacity + itemTenacity;
+    public double getTotalCd() {
+        return baseCd + itemCd;
     }
 }
