@@ -14,6 +14,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.api.distmarker.Dist;
+//import net.tukiguti.lolmod.status.StatusDisplayGui;
 
 
 @Mod(LolMod.MOD_ID)
@@ -41,6 +44,11 @@ public class LolMod {
         MinecraftForge.EVENT_BUS.register(EntityEvents.class);
 
         createModDirectory();
+
+        /*if (FMLEnvironment.dist == Dist.CLIENT) {
+            LOGGER.info("LolMod: Initializing StatusDisplayGui");
+            new StatusDisplayGui();
+        }*/
 
         LOGGER.info("LolMod: Initialization completed");
     }

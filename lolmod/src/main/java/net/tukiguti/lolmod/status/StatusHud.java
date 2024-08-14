@@ -58,7 +58,10 @@ public class StatusHud extends GuiComponent {
         drawString(poseStack, Minecraft.getInstance().font, "Mana Regen: " + df.format(status.getTotalManaRegen()), x, y, 0xFFFFFF);
         y += lineHeight;
 
-        drawString(poseStack, Minecraft.getInstance().font, "Damage: " + df.format(status.getTotalDamage()), x, y, 0xFFFFFF);
+        drawString(poseStack, Minecraft.getInstance().font, "AD: " + df.format(status.getTotalAd()), x, y, 0xFFFFFF);
+        y += lineHeight;
+
+        drawString(poseStack, Minecraft.getInstance().font, "AP: " + df.format(status.getTotalAp()), x, y, 0xFFFFFF);
         y += lineHeight;
 
         String armorPenetrationText = String.format("Armor Penetration: %d%%", (int)Math.round(status.getTotalArmorPenetration() * 100));
