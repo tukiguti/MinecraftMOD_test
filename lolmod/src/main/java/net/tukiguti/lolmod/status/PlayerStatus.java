@@ -76,11 +76,11 @@ public class PlayerStatus {
         this.baseManaRegen = 1 + (level * 0.1);
         this.baseAd = 1 + (level * 0.2);
         this.baseAp = 1 + (level * 0.2);
-        this.baseArmorPenetration = level * 0.1;
-        this.baseCritical = 0.05 + (level * 0.005);
+        this.baseArmorPenetration = 2 + (level * 0.2);
+        this.baseCritical = 2 + (level * 0.2);
         this.baseLifeSteal = level * 0.01;
         this.baseOmniVamp = level * 0.005;
-        this.baseCd = level * 0.01;
+        this.baseCd = 1 + (level * 0.2);
 
         applyAttributeModifiers();
     }

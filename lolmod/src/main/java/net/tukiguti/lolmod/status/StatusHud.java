@@ -20,6 +20,7 @@ public class StatusHud extends GuiComponent {
     private static final ResourceLocation STATUS_LIST_TEXTURE = new ResourceLocation("lolmod", "textures/status_icon/status_list.png");
     private static final int TEXTURE_WIDTH = 52;
     private static final int TEXTURE_HEIGHT = 39;
+    private static final float FONT_SCALE = 0.6f;
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
@@ -41,8 +42,32 @@ public class StatusHud extends GuiComponent {
         int y = height - TEXTURE_HEIGHT; // 下端からの距離
         blit(poseStack, x, y, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
+        poseStack.pushPose();
+        poseStack.scale(FONT_SCALE, FONT_SCALE, 1.0f);
+
         // ステータステキストを描画
-        //renderStatusText(poseStack, status, x + TEXTURE_WIDTH + 5, y);
+        int textX = x + 20;
+        int textY = y + 5;
+
+        //x+右へ　y+下へ
+        int adText = (int)status.getTotalAd();
+        drawString(poseStack, Minecraft.getInstance().font, String.valueOf(adText),
+                (int)((textX - 4) / FONT_SCALE), (int)((textY - 3) / FONT_SCALE), 0xFFFFFF);
+
+        int armorPenetrationText = (int)(status.getTotalArmorPenetration());
+        drawString(poseStack, Minecraft.getInstance().font, String.valueOf(armorPenetrationText),
+                (int)((textX - 4) / FONT_SCALE), (int)((textY + 7) / FONT_SCALE), 0xFFFFFF);
+
+        int apText = (int)status.getTotalAp();
+        drawString(poseStack, Minecraft.getInstance().font, String.valueOf(apText),
+                (int)((textX + 23) / FONT_SCALE), (int)((textY - 3) / FONT_SCALE), 0xFFFFFF);
+
+        String damageReductionText = String.format("%d%%", (int)Math.round(status.getTotalDamageReduction() * 100));
+        drawString(poseStack, Minecraft.getInstance().font, damageReductionText,
+                (int)((textX + 23) / FONT_SCALE), (int)((textY + 7) / FONT_SCALE), 0xFFFFFF);
+
+
+        poseStack.popPose();
     }
 
     /*private static void renderStatusText(PoseStack poseStack, PlayerStatus status, int x, int y) {
