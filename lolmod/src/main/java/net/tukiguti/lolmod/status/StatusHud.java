@@ -52,20 +52,36 @@ public class StatusHud extends GuiComponent {
         //x+右へ　y+下へ
         int adText = (int)status.getTotalAd();
         drawString(poseStack, Minecraft.getInstance().font, String.valueOf(adText),
-                (int)((textX - 4) / FONT_SCALE), (int)((textY - 3) / FONT_SCALE), 0xFFFFFF);
+                (int)((textX - 4) / FONT_SCALE), (int)((textY - 1) / FONT_SCALE), 0xFFFFFF);
 
         int armorPenetrationText = (int)(status.getTotalArmorPenetration());
         drawString(poseStack, Minecraft.getInstance().font, String.valueOf(armorPenetrationText),
-                (int)((textX - 4) / FONT_SCALE), (int)((textY + 7) / FONT_SCALE), 0xFFFFFF);
+                (int)((textX - 4) / FONT_SCALE), (int)((textY + 8) / FONT_SCALE), 0xFFFFFF);
+
+        int criticalText = (int)(status.getTotalCritical());
+        drawString(poseStack, Minecraft.getInstance().font, String.valueOf(criticalText),
+                (int)((textX - 4) / FONT_SCALE), (int)((textY + 17) / FONT_SCALE), 0xFFFFFF);
+
+        int maxHealthText = (int)(status.getTotalMaxHealth());
+        drawString(poseStack, Minecraft.getInstance().font, String.valueOf(maxHealthText),
+                (int)((textX - 4) / FONT_SCALE), (int)((textY + 26) / FONT_SCALE), 0xFFFFFF);
+
 
         int apText = (int)status.getTotalAp();
         drawString(poseStack, Minecraft.getInstance().font, String.valueOf(apText),
-                (int)((textX + 23) / FONT_SCALE), (int)((textY - 3) / FONT_SCALE), 0xFFFFFF);
+                (int)((textX + 22) / FONT_SCALE), (int)((textY - 1) / FONT_SCALE), 0xFFFFFF);
 
         String damageReductionText = String.format("%d%%", (int)Math.round(status.getTotalDamageReduction() * 100));
         drawString(poseStack, Minecraft.getInstance().font, damageReductionText,
-                (int)((textX + 23) / FONT_SCALE), (int)((textY + 7) / FONT_SCALE), 0xFFFFFF);
+                (int)((textX + 22) / FONT_SCALE), (int)((textY + 8) / FONT_SCALE), 0xFFFFFF);
 
+        int cdText = (int)status.getTotalCd();
+        drawString(poseStack, Minecraft.getInstance().font, String.valueOf(cdText),
+                (int)((textX + 22) / FONT_SCALE), (int)((textY + 17) / FONT_SCALE), 0xFFFFFF);
+
+        String movementSpeedText = String.format("%d%%", (int)Math.round((status.getTotalMovementSpeed() / BASE_MOVEMENT_SPEED - 1) * 100));
+        drawString(poseStack, Minecraft.getInstance().font, movementSpeedText,
+                (int)((textX + 22) / FONT_SCALE), (int)((textY + 26) / FONT_SCALE), 0xFFFFFF);
 
         poseStack.popPose();
     }
