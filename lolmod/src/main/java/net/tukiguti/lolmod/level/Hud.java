@@ -67,7 +67,7 @@ public class Hud extends GuiComponent {
             poseStack.scale(FONT_SCALE, FONT_SCALE, 1.0f);
 
             String levelText = "Level: " + currentLevel + " XP: " + currentXP + "/" + xpForNextLevel;
-            Minecraft.getInstance().font.draw(poseStack, levelText, (x + 2) / FONT_SCALE, (y - 8) / FONT_SCALE, 0xFFFFFF);
+            Minecraft.getInstance().font.draw(poseStack, levelText, (x + 3) / FONT_SCALE, (y - 8) / FONT_SCALE, 0xFFFFFF);
 
             poseStack.popPose();
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class Hud extends GuiComponent {
             poseStack.scale(FONT_SCALE, FONT_SCALE, 1.0f);
 
             String manaText = "Mana: " + currentMana + "/" + maxMana;
-            Minecraft.getInstance().font.draw(poseStack, manaText, (x + 11) / FONT_SCALE, (y - 8) / FONT_SCALE, 0x00FFFF);
+            Minecraft.getInstance().font.draw(poseStack, manaText, (x + 14) / FONT_SCALE, (y - 8) / FONT_SCALE, 0x00FFFF);
 
             poseStack.popPose();
         } catch (Exception e) {

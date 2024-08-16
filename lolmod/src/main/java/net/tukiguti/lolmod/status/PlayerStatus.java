@@ -130,17 +130,6 @@ public class PlayerStatus {
             updateStats();
         }
     }
-    /*@SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingTickEvent event) {
-        if (event.getEntity() instanceof Player && event.getEntity() == player) {
-            // 毎秒（20 ticks）ごとに回復チャンスをチェック
-            if (event.getEntity().tickCount % 20 == 0) {
-                if (Math.random() < getTotalHealthRegen()) {
-                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, REGEN_EFFECT_DURATION, REGEN_EFFECT_AMPLIFIER, false, false));
-                }
-            }
-        }
-    }*/
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         if (event.getEntity() instanceof Player && event.getEntity() == player) {
