@@ -15,6 +15,7 @@ import net.tukiguti.lolmod.level.LevelManager;
 import java.util.UUID;
 
 public class PlayerStatus {
+
     private static final UUID MOVEMENT_SPEED_MODIFIER_ID = UUID.fromString("d994c700-39a8-4e21-9dae-5deb56dc7ea4");
     private static final UUID MAX_HEALTH_MODIFIER_ID = UUID.fromString("5d6f0ba2-1286-46fc-b896-461c5cfd99f1");
     private static final UUID ARMOR_MODIFIER_ID = UUID.fromString("67afe8d3-7c55-4d6c-8baa-7340a32d2832");
@@ -44,8 +45,10 @@ public class PlayerStatus {
     private double itemDefense;
     private double baseManaRegen;
     private double itemManaRegen;
-    private double baseDamage;
-    private double itemDamage;
+    private double baseAd;
+    private double itemAd;
+    private double baseAp;
+    private double itemAp;
     private double baseArmorPenetration;
     private double itemArmorPenetration;
     private double baseCritical;
@@ -54,8 +57,8 @@ public class PlayerStatus {
     private double itemLifeSteal;
     private double baseOmniVamp;
     private double itemOmniVamp;
-    private double baseTenacity;
-    private double itemTenacity;
+    private double baseCd;
+    private double itemCd;
 
     public PlayerStatus(Player player) {
         this.player = player;
@@ -71,12 +74,13 @@ public class PlayerStatus {
         updateBaseStats(level);
 
         this.baseManaRegen = 1 + (level * 0.1);
-        this.baseDamage = 1 + (level * 0.2);
-        this.baseArmorPenetration = level * 0.1;
-        this.baseCritical = 0.05 + (level * 0.005);
+        this.baseAd = 1 + (level * 0.2);
+        this.baseAp = 1 + (level * 0.2);
+        this.baseArmorPenetration = 2 + (level * 0.2);
+        this.baseCritical = 2 + (level * 0.2);
         this.baseLifeSteal = level * 0.01;
         this.baseOmniVamp = level * 0.005;
-        this.baseTenacity = level * 0.01;
+        this.baseCd = 1 + (level * 0.2);
 
         applyAttributeModifiers();
     }
@@ -126,17 +130,6 @@ public class PlayerStatus {
             updateStats();
         }
     }
-    /*@SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingTickEvent event) {
-        if (event.getEntity() instanceof Player && event.getEntity() == player) {
-            // 毎秒（20 ticks）ごとに回復チャンスをチェック
-            if (event.getEntity().tickCount % 20 == 0) {
-                if (Math.random() < getTotalHealthRegen()) {
-                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, REGEN_EFFECT_DURATION, REGEN_EFFECT_AMPLIFIER, false, false));
-                }
-            }
-        }
-    }*/
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         if (event.getEntity() instanceof Player && event.getEntity() == player) {
@@ -173,8 +166,11 @@ public class PlayerStatus {
     public void setItemManaRegen(double bonus) {
         this.itemManaRegen = bonus;
     }
-    public void setItemDamage(double bonus) {
-        this.itemDamage = bonus;
+    public void setItemAd(double bonus) {
+        this.itemAd = bonus;
+    }
+    public void setItemAp(double bonus) {
+        this.itemAp = bonus;
     }
     public void setItemArmorPenetration(double bonus) {
         this.itemArmorPenetration = bonus;
@@ -188,8 +184,8 @@ public class PlayerStatus {
     public void setItemOmniVamp(double bonus) {
         this.itemOmniVamp = bonus;
     }
-    public void setItemTenacity(double bonus) {
-        this.itemTenacity = bonus;
+    public void setItemCd(double bonus) {
+        this.itemCd = bonus;
     }
 
     // 合計値を取得するメソッド
@@ -208,8 +204,11 @@ public class PlayerStatus {
     public double getTotalManaRegen() {
         return baseManaRegen + itemManaRegen;
     }
-    public double getTotalDamage() {
-        return baseDamage + itemDamage;
+    public double getTotalAd() {
+        return baseAd + itemAd;
+    }
+    public double getTotalAp() {
+        return baseAp + itemAp;
     }
     public double getTotalArmorPenetration() {
         return baseArmorPenetration + itemArmorPenetration;
@@ -223,7 +222,7 @@ public class PlayerStatus {
     public double getTotalOmniVamp() {
         return baseOmniVamp + itemOmniVamp;
     }
-    public double getTotalTenacity() {
-        return baseTenacity + itemTenacity;
+    public double getTotalCd() {
+        return baseCd + itemCd;
     }
 }
