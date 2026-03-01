@@ -20,6 +20,10 @@ build
 # other
 eclipse
 run
+run-data
+
+# VS Code (launch.json has absolute paths, regenerate with: gradlew genVSCodeRuns)
+.vscode/launch.json
 
 # Files from Forge MDK
 forge*changelog.txt

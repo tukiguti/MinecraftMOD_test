@@ -1,9 +1,7 @@
 package net.tukiguti.lolmod.level;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 @Mod("lolmod")
 @Mod.EventBusSubscriber(modid = "lolmod", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class Hud extends GuiComponent {
+public class Hud {
     private static final Logger LOGGER = LogManager.getLogger();
     private static long lastErrorTime = 0;
     private static final long ERROR_COOLDOWN = 5000; // 5秒
@@ -32,15 +30,15 @@ public class Hud extends GuiComponent {
         LocalPlayer player = mc.player;
         if (player == null) return;
 
-        PoseStack poseStack = event.getPoseStack();
+        GuiGraphics guiGraphics = event.getGuiGraphics();
         int width = mc.getWindow().getGuiScaledWidth();
         int height = mc.getWindow().getGuiScaledHeight();
 
-        renderLevelBar(poseStack, player, width, height);
-        renderManaBar(poseStack, player, width, height);
+        renderLevelBar(guiGraphics, player, width, height);
+        renderManaBar(guiGraphics, player, width, height);
     }
 
-    private static void renderLevelBar(PoseStack poseStack, LocalPlayer player, int width, int height) {
+    private static void renderLevelBar(GuiGraphics guiGraphics, LocalPlayer player, int width, int height) {
         int maxImageWidth = 80;
         int maxImageHeight = 5;
         int x = 5;
@@ -52,30 +50,28 @@ public class Hud extends GuiComponent {
             int xpForNextLevel = levelManager.getXPForNextLevel();
             int currentLevel = levelManager.getLevel();
 
-            RenderSystem.setShaderTexture(0, LEVEL_BAR_FRAME);
-            blit(poseStack, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
+            guiGraphics.blit(LEVEL_BAR_FRAME, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
 
             if (xpForNextLevel > 0) {
                 float progress = (float) currentXP / xpForNextLevel;
                 int imageWidth = (int) ((maxImageWidth - 2) * progress);
 
-                RenderSystem.setShaderTexture(0, LEVEL_BAR);
-                blit(poseStack, x + 1, y + 1, 0, 0, imageWidth, maxImageHeight - 2, maxImageWidth - 2, maxImageHeight - 2);
+                guiGraphics.blit(LEVEL_BAR, x + 1, y + 1, 0, 0, imageWidth, maxImageHeight - 2, maxImageWidth - 2, maxImageHeight - 2);
             }
 
-            poseStack.pushPose();
-            poseStack.scale(FONT_SCALE, FONT_SCALE, 1.0f);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().scale(FONT_SCALE, FONT_SCALE, 1.0f);
 
             String levelText = "Level: " + currentLevel + " XP: " + currentXP + "/" + xpForNextLevel;
-            Minecraft.getInstance().font.draw(poseStack, levelText, (x + 3) / FONT_SCALE, (y - 8) / FONT_SCALE, 0xFFFFFF);
+            guiGraphics.drawString(Minecraft.getInstance().font, levelText, (int)((x + 3) / FONT_SCALE), (int)((y - 8) / FONT_SCALE), 0xFFFFFF);
 
-            poseStack.popPose();
+            guiGraphics.pose().popPose();
         } catch (Exception e) {
             LOGGER.error("Error rendering level HUD", e);
         }
     }
 
-    private static void renderManaBar(PoseStack poseStack, LocalPlayer player, int width, int height) {
+    private static void renderManaBar(GuiGraphics guiGraphics, LocalPlayer player, int width, int height) {
         int maxImageWidth = 80;
         int maxImageHeight = 5;
         int x = 5;
@@ -85,23 +81,24 @@ public class Hud extends GuiComponent {
             ManaManager manaManager = ManaManager.get(player);
             int currentMana = manaManager.getCurrentMana();
             int maxMana = manaManager.getMaxMana();
+            if (maxMana <= 0) {
+                return;
+            }
 
-            RenderSystem.setShaderTexture(0, MANA_BAR_FRAME);
-            blit(poseStack, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
+            guiGraphics.blit(MANA_BAR_FRAME, x, y, 0, 0, maxImageWidth, maxImageHeight, maxImageWidth, maxImageHeight);
 
             float progress = (float) currentMana / maxMana;
             int imageWidth = (int) ((maxImageWidth - 2) * progress);
 
-            RenderSystem.setShaderTexture(0, MANA_BAR);
-            blit(poseStack, x + 1, y + 1, 0, 0, imageWidth, maxImageHeight - 2, maxImageWidth - 2, maxImageHeight - 2);
+            guiGraphics.blit(MANA_BAR, x + 1, y + 1, 0, 0, imageWidth, maxImageHeight - 2, maxImageWidth - 2, maxImageHeight - 2);
 
-            poseStack.pushPose();
-            poseStack.scale(FONT_SCALE, FONT_SCALE, 1.0f);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().scale(FONT_SCALE, FONT_SCALE, 1.0f);
 
             String manaText = "Mana: " + currentMana + "/" + maxMana;
-            Minecraft.getInstance().font.draw(poseStack, manaText, (x + 14) / FONT_SCALE, (y - 8) / FONT_SCALE, 0x00FFFF);
+            guiGraphics.drawString(Minecraft.getInstance().font, manaText, (int)((x + 14) / FONT_SCALE), (int)((y - 8) / FONT_SCALE), 0x00FFFF);
 
-            poseStack.popPose();
+            guiGraphics.pose().popPose();
         } catch (Exception e) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastErrorTime > ERROR_COOLDOWN) {

@@ -1,32 +1,23 @@
 package net.tukiguti.lolmod.level;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.util.FakePlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
-import net.tukiguti.lolmod.level.LolModConfig;
-import net.tukiguti.lolmod.level.PacketHandler;
-import net.tukiguti.lolmod.level.SyncLevelDataPacket;
 import net.tukiguti.lolmod.mana.ManaManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class LevelManager {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final Map<UUID, LevelManager> INSTANCES = new ConcurrentHashMap<>();
+
     private int level;
     private int currentXP;
-    private final Player player;
-
-    private static final String DATA_NAME = "LolModPlayerData";
-    private static final String LEVEL_KEY = "level";
-    private static final String XP_KEY = "xp";
-
-    private static LevelManager instance;
-
-    //private static final int DEFAULT_BASE_XP = 100;
-    //private static final double DEFAULT_XP_RATE = 1.1;
-    //private static final int DEFAULT_XP_FROM_SKELETON = 10;
+    private Player player;
 
     private LevelManager(Player player) {
         this.player = player;
@@ -34,10 +25,17 @@ public class LevelManager {
     }
 
     public static LevelManager get(Player player) {
-        if (instance == null) {
-            instance = new LevelManager(player);
-        }
-        return instance;
+        return INSTANCES.compute(player.getUUID(), (uuid, existing) -> {
+            if (existing == null) {
+                return new LevelManager(player);
+            }
+            existing.player = player;
+            return existing;
+        });
+    }
+
+    public static void remove(Player player) {
+        INSTANCES.remove(player.getUUID());
     }
 
     public void addXP(int amount) {
@@ -75,32 +73,10 @@ public class LevelManager {
     }
 
     private void save() {
-        /*if (player instanceof FakePlayer) return;
-        CompoundTag persistentData = player.getPersistentData();
-        CompoundTag data = new CompoundTag();
-        data.putInt(LEVEL_KEY, level);
-        data.putInt(XP_KEY, currentXP);
-        persistentData.put(DATA_NAME, data);
-        LOGGER.debug("Saved player data: Level {}, XP {}", level, currentXP);*/
         PlayerDataManager.savePlayerData(player, level, currentXP);
     }
 
     private void load() {
-        /*if (player instanceof FakePlayer) {
-            level = 1;
-            currentXP = 0;
-            return;
-        }
-        CompoundTag persistentData = player.getPersistentData();
-        if (persistentData.contains(DATA_NAME)) {
-            CompoundTag data = persistentData.getCompound(DATA_NAME);
-            level = data.getInt(LEVEL_KEY);
-            currentXP = data.getInt(XP_KEY);
-        } else {
-            level = 1;
-            currentXP = 0;
-        }
-        if (level == 0) level = 1;*/
         PlayerDataManager.PlayerData data = PlayerDataManager.loadPlayerData(player);
         level = data.level;
         currentXP = data.xp;

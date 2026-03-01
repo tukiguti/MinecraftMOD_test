@@ -6,7 +6,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.tukiguti.lolmod.level.LevelManager;
 import net.tukiguti.lolmod.mana.ManaManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +28,7 @@ public class EntityEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         LevelManager levelManager = LevelManager.get(player);
+        ManaManager.get(player).updateMaxMana();
         LOGGER.info("Player {} logged in. Level: {}, XP: {}",
                 player.getName().getString(), levelManager.getLevel(), levelManager.getCurrentXP());
     }
@@ -38,6 +38,7 @@ public class EntityEvents {
         Player player = event.getEntity();
         LevelManager levelManager = LevelManager.get(player);
         levelManager.setLevelData(levelManager.getLevel(), levelManager.getCurrentXP());
+        LevelManager.remove(player);
         LOGGER.info("Player {} logged out. Final Level: {}, XP: {}",
                 player.getName().getString(), levelManager.getLevel(), levelManager.getCurrentXP());
     }

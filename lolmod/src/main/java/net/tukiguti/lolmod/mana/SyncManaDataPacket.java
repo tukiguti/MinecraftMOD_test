@@ -32,8 +32,7 @@ public class SyncManaDataPacket {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
                 ManaManager manaManager = ManaManager.get(mc.player);
-                manaManager.setCurrentMana(msg.currentMana);
-                manaManager.updateMaxMana();
+                manaManager.setSyncedMana(msg.currentMana, msg.maxMana);
                 LOGGER.info("[CLIENT] Received mana sync packet: Current Mana {}, Max Mana {} for player {}", msg.currentMana, msg.maxMana, mc.player.getName().getString());
             }
         });

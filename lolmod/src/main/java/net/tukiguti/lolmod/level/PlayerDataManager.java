@@ -27,7 +27,7 @@ public class PlayerDataManager {
     private static String currentWorldName = "";
 
     public static void savePlayerData(Player player, int level, int xp) {
-        String worldName = getWorldName(player.getLevel());
+        String worldName = getWorldName(player.level());
 
         if (!worldName.equals(currentWorldName)) {
             loadFromFile(worldName);
@@ -42,7 +42,7 @@ public class PlayerDataManager {
     }
 
     public static PlayerData loadPlayerData(Player player) {
-        String worldName = getWorldName(player.getLevel());
+        String worldName = getWorldName(player.level());
 
         // 新しいワールド名に切り替えたときにのみファイルをロードする
         if (!worldName.equals(currentWorldName)) {

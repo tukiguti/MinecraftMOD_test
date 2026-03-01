@@ -9,13 +9,10 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.tukiguti.lolmod.level.LolModConfig;
 import net.tukiguti.lolmod.level.EntityEvents;
 import net.tukiguti.lolmod.level.PacketHandler;
-import net.tukiguti.lolmod.level.PlayerDataManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.api.distmarker.Dist;
 
 
 @Mod(LolMod.MOD_ID)
@@ -51,7 +48,6 @@ public class LolMod {
         event.enqueueWork(() -> {
             PacketHandler.init();
             LolModConfig.loadConfig();
-            PlayerDataManager.loadPlayerData(null);
 
             if (LolModConfig.isLoaded()) {
                 LOGGER.info("Config successfully loaded during common setup");
