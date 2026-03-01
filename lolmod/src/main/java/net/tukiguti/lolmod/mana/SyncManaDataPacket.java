@@ -29,11 +29,11 @@ public class SyncManaDataPacket {
 
     public static void handle(SyncManaDataPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) {
-                ManaManager manaManager = ManaManager.get(mc.player);
+            var player = Minecraft.getInstance().player;
+            if (player != null) {
+                ManaManager manaManager = ManaManager.get(player);
                 manaManager.setSyncedMana(msg.currentMana, msg.maxMana);
-                LOGGER.info("[CLIENT] Received mana sync packet: Current Mana {}, Max Mana {} for player {}", msg.currentMana, msg.maxMana, mc.player.getName().getString());
+                LOGGER.info("[CLIENT] Received mana sync packet: Current Mana {}, Max Mana {} for player {}", msg.currentMana, msg.maxMana, player.getName().getString());
             }
         });
         ctx.get().setPacketHandled(true);
